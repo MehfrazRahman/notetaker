@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MeetNotetaker</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #1f3b57;
+            color: rgb(58, 54, 54);
+            text-align: center;
+        }
+
+        .container {
+            width: 60%;
+            margin: auto;
+            background: #3f6d82;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 15px;
+            background: #3f6d82;
+            color: white;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: purple;
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 5px;
+            margin: 10px;
+            cursor: pointer;
+       }
+
+        .output {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        /* Spinner */
+        #spinner {
+            display: none;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>MeetNotetaker – Meeting Notetaker & Summarizer</h2>
+
+    <form method="POST" onsubmit="showSpinner()">
+        <textarea name="notes" placeholder="Paste your meeting notes here..." required></textarea><br>
+        <button type="submit">Generate Summary</button>
+    </form>
+
+    <!-- Spinner -->
+    <div id="spinner">
+        <p>Generating summary... ⏳</p>
+    </div>
+
+
+    <div class="output" id="output">
+
+        <h3>Summary</h3>
+        <p id="summaryText"></p>
+
+        <h3>Key Points</h3>
+        <ul id="keyPoints">
+                <li></li>
+        </ul>
+
+        <h3>Action Items</h3>
+        <ul id="actionItems">
+                <li></li>
+        </ul>
+
+        <button onclick="copySummary()">Copy Summary</button>
+        <button onclick="downloadPDF()">Download as PDF</button>
+
+    </div>
+</div>
+
+<script>
+function showSpinner() {
+    document.getElementById("spinner").style.display = "block";
+}
+
+function copySummary() {
+    const text = document.getElementById("summaryText").innerText;
+    navigator.clipboard.writeText(text);
+    alert("Summary copied!");
+}
+
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    let content = document.getElementById("output").innerText;
+
+    let lines = doc.splitTextToSize(content, 180);
+    doc.text(lines, 10, 10);
+
+    doc.save("MeetNotetaker.pdf");
+}
+</script>
+
+</body>
+</html>
